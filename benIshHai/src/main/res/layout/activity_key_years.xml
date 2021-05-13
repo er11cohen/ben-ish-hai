@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/LinearLayout01"
+                android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical">
+
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" 
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+<Button
+		android:id="@+id/button_mic"
+		android:layout_width="35sp"
+		android:layout_height="35sp"
+		android:visibility="gone"
+		android:onClick="RecognizeSpeech"/>
+       
+<EditText
+		android:id="@+id/EditTextSearch"
+		android:layout_width="0sp"
+		 android:layout_weight=".70"
+		android:layout_height="wrap_content"
+		android:hint="חיפוש במפתח השנים"
+		android:nextFocusUp="@id/EditTextSearch" 
+		android:nextFocusLeft="@id/EditTextSearch"
+		/>
+<Button
+		android:id="@+id/clearable_button_clear"
+		android:layout_width="30sp"  
+		android:layout_height="30sp" 
+		android:paddingLeft="20sp"
+		android:background="@android:drawable/ic_menu_close_clear_cancel"
+		android:onClick="ClearSearch"/>
+
+       
+</LinearLayout>
+    
+
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       
+        android:orientation="horizontal" >
+        
+     <ListView android:id="@+id/ListViewHlach"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		
+		 >
+		</ListView>
+</LinearLayout>
+
+
+</LinearLayout>

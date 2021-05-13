@@ -1,0 +1,160 @@
+<LinearLayout 
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:background="@drawable/background_activty"
+   >
+    <ScrollView
+         android:layout_width="match_parent"
+         android:layout_height="match_parent">
+
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    
+       <!--  android:background="@drawable/background_button"--> 
+   
+    <Button
+        android:id="@+id/KeyYears"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="מפתח השנים"
+        android:onClick="OpenKeyYears"
+       android:background="@drawable/background_button" 
+        /> 
+      <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+      
+    <Button
+        android:id="@+id/Year_1"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="שנה א"
+        android:onClick="SelectYear"
+        android:tag="Year_1"
+       android:background="@drawable/background_button" 
+        /> 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     
+      <Button
+        android:id="@+id/Year_2"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="שנה ב"
+        android:onClick="SelectYear"
+        android:tag="Year_2"
+       android:background="@drawable/background_button"
+        /> 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     
+       <Button
+        android:id="@+id/CurrentWeek1"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="הלימוד השבועי שנה א"
+        android:onClick="CurrentWeek"
+         android:tag="Year_1"
+        
+        android:background="@drawable/background_button"
+        /> 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     	 
+     	 <Button
+        android:id="@+id/CurrentWeek2"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="הלימוד השבועי שנה ב"
+        android:onClick="CurrentWeek"
+         android:tag="Year_2"
+        
+        android:background="@drawable/background_button"
+        /> 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+      
+    <Button
+        android:id="@+id/LastLoction"
+        android:layout_width="match_parent"
+      android:layout_height="50sp"
+        android:text="שחזר מיקום אחרון"
+        android:onClick="LastLocation"
+        android:background="@drawable/background_button"
+        /> 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     <Button
+        android:id="@+id/History"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="היסטוריה"
+        android:onClick="SelectHistory"
+      android:background="@drawable/background_button"
+        /> 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     
+     <Button
+        android:id="@+id/Settings"
+        android:layout_width="match_parent"
+         android:layout_height="50sp"
+        android:text="הגדרות"
+        android:onClick="OpenSettings"
+        android:background="@drawable/background_button"
+        /> 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     
+     	 <Button
+        android:id="@+id/Help"
+        android:layout_width="match_parent"
+       android:layout_height="50sp"
+        android:text="עזרה"
+        android:onClick="OpenHelp"
+         android:background="@drawable/background_button"
+        />
+     	 
+     	 <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     	 
+    <Button
+        android:id="@+id/About"
+        android:layout_width="match_parent"
+         android:layout_height="50sp"
+        android:text="אודות"
+        android:onClick="OpenAbout"
+         android:background="@drawable/background_button"
+        />
+     	 
+     	  <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+     	  
+		</LinearLayout>
+
+	</ScrollView>
+ </LinearLayout>
