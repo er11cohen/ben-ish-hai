@@ -28,7 +28,7 @@
         <activity
             android:name=".WebActivity"
             android:configChanges="orientation|screenSize"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_web"
             android:launchMode="singleTop">
             <meta-data
@@ -60,7 +60,7 @@
         <activity
             android:name=".SearchInAllBook"
             android:configChanges="orientation|screenSize"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_search_in_all_book"
             android:launchMode="singleTop">
             <meta-data
