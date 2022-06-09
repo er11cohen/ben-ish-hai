@@ -33,13 +33,13 @@ public class MainActivity extends Activity {
 
     SharedPreferences defaultSharedPreferences;
     final String shareTextIntent = "בן איש חי  - Ben Ish Chai https://play.google.com/store/apps/details?id=com.eran.benishhai";
-    WeakReference<Activity> WeakReferenceActivity;
+    WeakReference<Activity> weakReferenceActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        WeakReferenceActivity = new WeakReference<Activity>(this);
+        weakReferenceActivity = new WeakReference<Activity>(this);
         defaultSharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
         SharedPreferences BIHPreferences = getSharedPreferences(
@@ -102,16 +102,6 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             getMenuInflater().inflate(R.menu.main, menu);
-            MenuItem item = menu.findItem(R.id.menu_item_share);
-            ShareActionProvider myShareActionProvider = (ShareActionProvider) item
-                    .getActionProvider();
-            Intent myIntent = new Intent();
-            myIntent.setAction(Intent.ACTION_SEND);
-            myIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    "בן איש חי  - Ben Ish Chai https://play.google.com/store/apps/details?id=com.eran.benishhai");
-            myIntent.setType("text/plain");
-            myShareActionProvider.setShareIntent(myIntent);
         } else {
             MenuItem itemSearch = menu.findItem(R.id.menu_search_all_book);
             itemSearch.setVisible(false);
@@ -122,15 +112,11 @@ public class MainActivity extends Activity {
     public void SelectYear(View v) {
         Intent intent = new Intent(getApplicationContext(), HumashActivity.class);
         Location location = new Location(null, (String) ((Button) v).getTag(), (String) ((Button) v).getText(), null, null, null, null, -1);
-//		intent.putExtra("yearHe", ((Button) v).getText());
-//		intent.putExtra("yearEn", (String) ((Button) v).getTag());
         intent.putExtra("location", location);
         startActivity(intent);
     }
 
     public void LastLocation(View v) {
-//		if (!Utils.isPermissionWriteRequired(MainActivity.this, 1, true))
-//		{
         SharedPreferences preferences = getSharedPreferences("Locations",
                 MODE_PRIVATE);
         String preferencesLocationsJson = preferences.getString(
@@ -141,15 +127,12 @@ public class MainActivity extends Activity {
             intent.putExtra("requiredFileName", "-1"/* lastLocation */);
             startActivity(intent);
         }
-//		}
     }
 
     public void SelectHistory(View v) {
-        //	if (!Utils.isPermissionWriteRequired(MainActivity.this, 2, true)) {
         Intent intent = new Intent(getApplicationContext(),
                 GalleryBIH.class);
         startActivityForResult(intent, 1);
-        //	}
     }
 
     @Override
@@ -158,9 +141,6 @@ public class MainActivity extends Activity {
         if (requestCode == 1/* from gallery */) {
             if (data != null && data.getExtras().containsKey("fileName")) {
                 String fileName = data.getStringExtra("fileName");
-                // Toast.makeText(getApplicationContext(), "1 + "+fileName ,
-                // Toast.LENGTH_LONG).show();
-
                 Intent intent = new Intent(getApplicationContext(),
                         WebActivity.class);
                 intent.putExtra("requiredFileName", fileName);
@@ -303,11 +283,6 @@ public class MainActivity extends Activity {
     private void continueToOpenLimud(Halach halach) {
         Intent intentCurrentWeek = new Intent(getApplicationContext(),
                 WebActivity.class);
-//		intentCurrentWeek.putExtra("yearEn", halach.getYearEn());
-//		intentCurrentWeek.putExtra("yearHe", halach.getYearHe());
-//		intentCurrentWeek.putExtra("humashEn", halach.getHumashEn());
-//		intentCurrentWeek.putExtra("parshHe", halach.getParshHe());
-//		intentCurrentWeek.putExtra("parshEn", halach.getParshEn());
 
         Location location = new Location(null, halach.getYearEn(), halach.getYearHe(), halach.getHumashHe(),
                 halach.getHumashEn(), halach.getParshHe(), halach.getParshEn(), -1);
@@ -316,14 +291,14 @@ public class MainActivity extends Activity {
     }
 
     public void OpenHelp(View v) {
-        Utils.alertDialogShow(WeakReferenceActivity, getApplicationContext(),
+        Utils.alertDialogShow(weakReferenceActivity, getApplicationContext(),
                 "עזרה", android.R.drawable.ic_menu_help, "files/help.txt",
                 "הבנתי", "זכה את הרבים", shareTextIntent);
 
     }
 
     public void OpenAbout(View v) {
-        Utils.alertDialogShow(WeakReferenceActivity, getApplicationContext(),
+        Utils.alertDialogShow(weakReferenceActivity, getApplicationContext(),
                 "אודות", android.R.drawable.ic_menu_info_details,
                 "files/about.txt", "אשריכם תזכו למצוות", "זכה את הרבים",
                 shareTextIntent);
@@ -344,6 +319,9 @@ public class MainActivity extends Activity {
                 break;
             case R.id.menu_search_all_book:
                 searchInAllBook();
+                break;
+            case R.id.menu_item_share:
+                Utils.shareApp(weakReferenceActivity, shareTextIntent);
                 break;
             default:
                 break;
