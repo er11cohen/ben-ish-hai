@@ -32,7 +32,6 @@ public class KeyYearsActivity extends Activity {
     private static final int RECOGNIZE_SPEECH_CODE = 1234;
 
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,17 +41,12 @@ public class KeyYearsActivity extends Activity {
         //done on xml
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
-            Button micButton = (Button) findViewById(R.id.button_mic);
-            micButton.setBackgroundResource(android.R.drawable.presence_audio_busy);
-            micButton.setVisibility(View.VISIBLE);
-        }
+        Button micButton = (Button) findViewById(R.id.button_mic);
+        micButton.setBackgroundResource(android.R.drawable.presence_audio_busy);
+        micButton.setVisibility(View.VISIBLE);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         lv = (ListView) findViewById(R.id.ListViewHlach);
         et = (EditText) findViewById(R.id.EditTextSearch);
@@ -72,11 +66,6 @@ public class KeyYearsActivity extends Activity {
                 Halach selected = (Halach) lv.getItemAtPosition(position);
 
                 Intent intent = new Intent(getApplicationContext(), WebActivity.class);
-//		    	intent.putExtra("yearHe", selected.getYearHe());
-//		    	intent.putExtra("yearEn", selected.getYearEn());
-//		    	intent.putExtra("parshHe", selected.getParshHe());
-//		    	intent.putExtra("parshEn", selected.getParshEn());
-//		    	intent.putExtra("humashEn", selected.getHumashEn());
 
                 Location location = new Location(null, selected.getYearEn(), selected.getYearHe(), selected.getHumashHe(),
                         selected.getHumashEn(), selected.getParshHe(), selected.getParshEn(), -1);
@@ -84,16 +73,6 @@ public class KeyYearsActivity extends Activity {
                 startActivity(intent);
             }
         });
-	   
-	    
-	    /*lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            public boolean onItemLongClick(AdapterView<?> arg0, View v,int index, long arg3) 
-            {
-            	Toast.makeText(KeyYearsActivity.this,Integer.toString(index),Toast.LENGTH_LONG).show();
-            	return true;
-            }
-            }); */
 
 
         et.addTextChangedListener(new TextWatcher() {

@@ -43,16 +43,12 @@ public class ParashotActivity extends Activity {
     String yearEn, yearHe, humashEn, humashHe;
     Location location;
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parashot);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         String[] EngliseArr = null;
         String[] HebrewArr = null;
@@ -131,12 +127,6 @@ public class ParashotActivity extends Activity {
     View.OnClickListener SelectParash = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = new Intent(getApplicationContext(), WebActivity.class);
-//	    	intent.putExtra("yearHe", yearHe);
-//	    	intent.putExtra("yearEn", yearEn);
-//	    	intent.putExtra("parshHe", ((Button)v).getText());
-//	    	intent.putExtra("parshEn", v.getTag().toString());
-//	    	intent.putExtra("humashEn", humashEn);
-
             location.setParshHe(((Button) v).getText().toString());
             location.setParshEn(v.getTag().toString());
             intent.putExtra("location", location);

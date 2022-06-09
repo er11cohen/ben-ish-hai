@@ -14,15 +14,12 @@ public class HumashActivity extends Activity {
     String yearEn, yearHe;
     Location location;
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humash);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         location = (Location) intent.getParcelableExtra("location");
@@ -34,11 +31,6 @@ public class HumashActivity extends Activity {
 
     public void SelectIntro(View v) {
         Intent intent = new Intent(getApplicationContext(), WebActivity.class);
-//	    	intent.putExtra("yearHe", "בן איש חי");
-//	    	intent.putExtra("yearEn", "intro_1");
-//	    	intent.putExtra("parshHe", "הקדמה");
-//	    	intent.putExtra("parshEn", "intro");
-//	    	intent.putExtra("humashEn", "intro_2");
 
         location.setYearHe("בן איש חי");
         location.setYearEn("intro_1");
@@ -51,11 +43,6 @@ public class HumashActivity extends Activity {
 
     public void SelectHumash(View v) {
         Intent intent = new Intent(getApplicationContext(), ParashotActivity.class);
-//    	intent.putExtra("yearHe", yearHe);
-//    	intent.putExtra("yearEn", yearEn);
-//    	String humashEn = (String)((Button)v).getTag();
-//    	intent.putExtra("humashEn", humashEn);
-//    	intent.putExtra("humashHe", ((Button)v).getText());
 
         location.setHumashEn((String) ((Button) v).getTag());
         location.setHumashHe((String) ((Button) v).getText());
