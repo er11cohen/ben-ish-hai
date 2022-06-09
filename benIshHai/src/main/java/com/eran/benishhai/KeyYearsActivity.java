@@ -1,6 +1,5 @@
 package com.eran.benishhai;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;

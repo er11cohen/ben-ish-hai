@@ -1,6 +1,5 @@
 package com.eran.benishhai;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.media.Ringtone;
 import android.media.RingtoneManager;

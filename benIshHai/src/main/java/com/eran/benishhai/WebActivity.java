@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
@@ -382,7 +381,8 @@ public class WebActivity extends Activity {
                 editor.putString("preferencesLocationsJson", json);
                 editor.commit();
 
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 
