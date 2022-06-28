@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
                 "BIHPreferences", MODE_PRIVATE);
 
         String version = BIHPreferences.getString("version", "-1");
-        if (!version.equals("1.6.2")) {
+        if (!version.equals("1.6.3")) {
             String message = Utils.ReadTxtFile("files/newVersion.txt",
                     getApplicationContext());
             ((TextView) new AlertDialog.Builder(this)
@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
                     .setMovementMethod(LinkMovementMethod.getInstance());
 
             SharedPreferences.Editor editor = BIHPreferences.edit();
-            editor.putString("version", "1.6.2");
+            editor.putString("version", "1.6.3");
             editor.commit();
         }
     }
