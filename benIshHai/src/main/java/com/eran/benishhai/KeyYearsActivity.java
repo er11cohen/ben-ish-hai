@@ -36,10 +36,6 @@ public class KeyYearsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_key_years);
 
-        //prevent open keyboard automatically
-        //done on xml
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
         Button micButton = (Button) findViewById(R.id.button_mic);
         micButton.setBackgroundResource(android.R.drawable.presence_audio_busy);
         micButton.setVisibility(View.VISIBLE);

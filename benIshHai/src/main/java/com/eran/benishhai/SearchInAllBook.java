@@ -29,7 +29,6 @@ import java.util.ArrayList;
 
 public class SearchInAllBook extends Activity {
 
-    //android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN/////
     SearchView searchView;
     String[] BIHRows = null;
     String queryText = "";
@@ -72,10 +71,6 @@ public class SearchInAllBook extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.search_in_all_book, menu);
-
-
-        // Toast.makeText(getApplicationContext(),"onQueryTextChange "
-        // ,Toast.LENGTH_LONG).show();
 
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         searchItem.setVisible(true);

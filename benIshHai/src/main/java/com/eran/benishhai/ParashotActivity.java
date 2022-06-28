@@ -99,7 +99,6 @@ public class ParashotActivity extends Activity {
 
         LinearLayout ll = (LinearLayout) findViewById(R.id.LinearLayoutParashot);
         int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 50, getResources().getDisplayMetrics());
-        //LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, height);
         Button btnParash;
         View view;

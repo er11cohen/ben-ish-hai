@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,7 +26,6 @@ import net.sourceforge.zmanim.hebrewcalendar.JewishCalendar;
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 
-//Toast.makeText(this,Integer.toString(scrollY),Toast.LENGTH_LONG).show();
 public class MainActivity extends Activity {
 
     SharedPreferences defaultSharedPreferences;
@@ -65,34 +63,6 @@ public class MainActivity extends Activity {
             SharedPreferences.Editor editor = BIHPreferences.edit();
             editor.putString("version", "1.6.2");
             editor.commit();
-        }
-
-//		if (!Utils.isPermissionWriteRequired(MainActivity.this, 0)) {
-//			// Your code if permission available
-//		}
-
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            default:
-                for (int i = 0; i < permissions.length; i++) {
-                    String permission = permissions[i];
-                    int grantResult = grantResults[i];
-                    switch (permission) {
-                        case "android.permission.WRITE_EXTERNAL_STORAGE":
-                            Utils.firstTimeAskedPermission(MainActivity.this, "android.permission.WRITE_EXTERNAL_STORAGE");
-                            if (PackageManager.PERMISSION_GRANTED == grantResult) {
-                                //Toast.makeText(this,"PERMISSION GRANTED",Toast.LENGTH_LONG).show();
-                            }
-                            break;
-                    }
-                }
-                break;
         }
     }
 
@@ -171,12 +141,6 @@ public class MainActivity extends Activity {
         boolean LiveInIsrael = defaultSharedPreferences.getBoolean(
                 "CBLiveInIsrael", true);
         jc.setInIsrael(LiveInIsrael);
-
-
-        //System.out.println("getTchilasZmanKidushLevana3Days: "+jc.getTchilasZmanKidushLevana3Days().toString());
-        //System.out.println("getTchilasZmanKidushLevana7Days: "+jc.getTchilasZmanKidushLevana7Days().toString());
-        //System.out.println("getSofZmanKidushLevanaBetweenMoldos: "+jc.getSofZmanKidushLevanaBetweenMoldos().toString());
-        //System.out.println("getSofZmanKidushLevana15Days: "+jc.getSofZmanKidushLevana15Days().toString());
 
         int parshaIndex = jc.getParshaIndex();
         while (parshaIndex == -1) {

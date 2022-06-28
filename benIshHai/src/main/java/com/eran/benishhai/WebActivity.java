@@ -41,7 +41,6 @@ import java.util.Date;
 
 public class WebActivity extends Activity {
 
-    private static final int REQUEST_APP_PERMISSION = 1;
     WebView wv;
     WebSettings wvSetting;
     int scrollY = 0;
@@ -138,11 +137,11 @@ public class WebActivity extends Activity {
             }
         } else {
             Location location = (Location) intent.getParcelableExtra("location");
-            yearEn = location.getYearEn();//intent.getStringExtra("yearEn");
-            yearHe = location.getYearHe();//intent.getStringExtra("yearHe");
-            humashEn = location.getHumashEn();//intent.getStringExtra("humashEn");
-            parshHe = location.getParshHe();//intent.getStringExtra("parshHe");
-            parshEn = location.getParshEn();//intent.getStringExtra("parshEn");
+            yearEn = location.getYearEn();
+            yearHe = location.getYearHe();
+            humashEn = location.getHumashEn();
+            parshHe = location.getParshHe();
+            parshEn = location.getParshEn();
             textToSearch = location.getTextToSearch();
         }
 
@@ -189,9 +188,6 @@ public class WebActivity extends Activity {
 
                 @Override
                 public boolean onQueryTextChange(String query) {
-                    // Toast.makeText(getApplicationContext(),"onQueryTextChange "
-                    // +query ,Toast.LENGTH_LONG).show();
-
                     return true;
                 }
 
