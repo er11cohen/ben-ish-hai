@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
@@ -42,7 +41,6 @@ import java.util.Date;
 
 public class WebActivity extends Activity {
 
-    private static final int REQUEST_APP_PERMISSION = 1;
     WebView wv;
     WebSettings wvSetting;
     int scrollY = 0;
@@ -63,7 +61,6 @@ public class WebActivity extends Activity {
     MenuItem PreviousMI = null;
     MenuItem NextMI = null;
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,24 +69,13 @@ public class WebActivity extends Activity {
                 .getDefaultSharedPreferences(this);
 
         fullScreen = defaultSharedPreferences.getBoolean("CBFullScreen", false);
-        if (fullScreen
-                && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            this.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-            this.getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
 
         setContentView(R.layout.activity_web);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            if (fullScreen) {
-                getWindow()
-                        .addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                actionBar.hide();
-            }
+        actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (fullScreen) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            actionBar.hide();
         }
 
         boolean keepScreenOn = defaultSharedPreferences.getBoolean(
@@ -151,11 +137,11 @@ public class WebActivity extends Activity {
             }
         } else {
             Location location = (Location) intent.getParcelableExtra("location");
-            yearEn = location.getYearEn();//intent.getStringExtra("yearEn");
-            yearHe = location.getYearHe();//intent.getStringExtra("yearHe");
-            humashEn = location.getHumashEn();//intent.getStringExtra("humashEn");
-            parshHe = location.getParshHe();//intent.getStringExtra("parshHe");
-            parshEn = location.getParshEn();//intent.getStringExtra("parshEn");
+            yearEn = location.getYearEn();
+            yearHe = location.getYearHe();
+            humashEn = location.getHumashEn();
+            parshHe = location.getParshHe();
+            parshEn = location.getParshEn();
             textToSearch = location.getTextToSearch();
         }
 
@@ -163,18 +149,9 @@ public class WebActivity extends Activity {
         wvSetting.setJavaScriptEnabled(true);
         LoadWebView();
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            WeakReference<Activity> WeakReferenceActivity = new WeakReference<Activity>(
-                    this);
-            Utils.toggleFullScreen(WeakReferenceActivity,
-                    getApplicationContext(), R.id.webViewBIH, actionBar,
-                    fullScreen);
-        }
-
-        WeakReference<Activity> WeakReferenceActivity = new WeakReference<Activity>(
-                this);
-        Utils.firstDoubleClickInfo(defaultSharedPreferences,
-                WeakReferenceActivity);
+        WeakReference<Activity> weakReferenceActivity = new WeakReference<Activity>(this);
+        Utils.toggleFullScreen(weakReferenceActivity, getApplicationContext(), R.id.webViewBIH, actionBar, fullScreen);
+        Utils.firstDoubleClickInfo(defaultSharedPreferences, weakReferenceActivity);
     }
 
     protected void onResume() {
@@ -211,9 +188,6 @@ public class WebActivity extends Activity {
 
                 @Override
                 public boolean onQueryTextChange(String query) {
-                    // Toast.makeText(getApplicationContext(),"onQueryTextChange "
-                    // +query ,Toast.LENGTH_LONG).show();
-
                     return true;
                 }
 
@@ -275,13 +249,9 @@ public class WebActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("NewApi")
     private void LoadWebView() {
         Utils.setOpacity(wv, 0.1);// for where the wv already exist
-        // if (!fullScreen)
-        // {
         setTitle(yearHe + " - " + parshHe);
-        // }
         wv.loadUrl("file:///android_asset/" + yearEn + "/" + humashEn + "/"
                 + parshEn + ".html");
         int size = Utils.readSize(BIHPreferences);
@@ -292,10 +262,6 @@ public class WebActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                // //hide loading image
-                // findViewById(R.id.progressBarBIH).setVisibility(View.GONE);
-                // //show webview
-                // wv.setVisibility(View.VISIBLE);
                 Utils.setOpacity(wv, 0.1);
                 Utils.showWebView(wv,
                         (ProgressBar) findViewById(R.id.progressBarBIH), true);
@@ -344,8 +310,6 @@ public class WebActivity extends Activity {
     }
 
     private void saveLastLocation() {
-//		if (!Utils.isPermissionWriteRequired(WebActivity.this, 0, false))
-//		{
         File path = Utils.getFilePath(getApplicationContext());
         File folder = new File(path + appName);
         boolean success = true;
@@ -414,10 +378,8 @@ public class WebActivity extends Activity {
                 editor.commit();
 
             } catch (Exception e) {
-                // e.printStackTrace();
             }
         }
-        //	}
     }
 
     @SuppressLint("NewApi")
@@ -441,7 +403,7 @@ public class WebActivity extends Activity {
     @SuppressLint("NewApi")
     @Override
     protected void onNewIntent(Intent intent) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {////////////
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
                 String query = intent.getStringExtra(SearchManager.QUERY);
                 searchView.setQuery(query, true);
@@ -455,7 +417,6 @@ public class WebActivity extends Activity {
         }
     }
 
-    @SuppressLint("NewApi")
     private void closeSearch(Boolean fromListener) {
         wv.clearMatches();// clear the finds
         PreviousMI.setVisible(false);

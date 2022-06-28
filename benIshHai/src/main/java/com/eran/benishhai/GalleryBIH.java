@@ -34,10 +34,8 @@ public class GalleryBIH extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallerybih);
         String appName = "/BenIshHai";
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         myGallery = (LinearLayout) findViewById(R.id.mygallery);
         File path = Utils.getFilePath(getApplicationContext());
@@ -74,20 +72,13 @@ public class GalleryBIH extends Activity {
     }
 
 
-    @SuppressLint("NewApi")
     View insertPhoto(String path, final String fileName) {
         int width, height;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2) {
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            width = size.x;
-            height = size.y;
-        } else {
-            Display display = getWindowManager().getDefaultDisplay();
-            width = display.getWidth();  // deprecated
-            height = display.getHeight();  // deprecated
-        }
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        width = size.x;
+        height = size.y;
 
         width -= 70;
         height -= 70;
