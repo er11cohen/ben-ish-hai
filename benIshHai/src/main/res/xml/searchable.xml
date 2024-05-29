@@ -3,4 +3,5 @@
     android:hint="חיפוש"
     android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
     android:imeOptions="actionSearch"
+    android:voiceLanguage="@string/locale"
     />

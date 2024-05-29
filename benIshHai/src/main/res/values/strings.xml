@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">בן איש חי</string>
+    <string name="locale">he-IL</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_web">WebActivity</string>
