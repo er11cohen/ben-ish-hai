@@ -130,6 +130,7 @@ public class KeyYearsActivity extends Activity {
         Boolean isConnected = Utils.isConnected(getApplicationContext());
         if (isConnected) {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, Long.valueOf(1000));
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "he-IL");
             // intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"string to show on pop up");
