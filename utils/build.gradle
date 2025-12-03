@@ -5,7 +5,7 @@ properties.load(project.rootProject.file("gradle.properties").newDataInputStream
 def $sdk = properties.getProperty("sdk") as Integer
 
 android {
-    compileSdk $sdk
+    compileSdkVersion $sdk
     namespace 'com.eran.utils'
 
     defaultConfig {

@@ -2,33 +2,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.eran.benishhai.SearchInAllBook" >
+    android:fitsSystemWindows="true"
+    tools:context="com.eran.benishhai.SearchInAllBook">
 
     <TextView
         android:id="@+id/TVNoResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:padding="10dp"
-        android:text="אין תוצאות לחיפוש המבוקש" 
         android:layout_gravity="right"
+        android:padding="10dp"
+        android:text="אין תוצאות לחיפוש המבוקש"
+        android:textSize="20dp"
+        android:textStyle="bold"
         android:visibility="gone" />
-    
-     <ListView android:id="@+id/ListViewHalach"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:visibility="gone"
-		>
-		</ListView>
-		
-      <ProgressBar
+
+    <ListView
+        android:id="@+id/ListViewHalach"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <ProgressBar
         android:id="@+id/progressBarSearchInAllBook"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" 
-        android:visibility="gone"/>
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

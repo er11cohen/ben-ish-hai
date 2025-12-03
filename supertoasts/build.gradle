@@ -5,12 +5,16 @@ properties.load(project.rootProject.file("gradle.properties").newDataInputStream
 def $sdk = properties.getProperty("sdk") as Integer
 
 android {
-    compileSdk $sdk
+    compileSdkVersion $sdk
     namespace 'com.github.johnpersano.supertoasts'
 
     defaultConfig {
         minSdkVersion 14
         targetSdk $sdk
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_20
+            targetCompatibility JavaVersion.VERSION_20
+        }
     }
 
     buildTypes {

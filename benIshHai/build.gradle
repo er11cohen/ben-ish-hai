@@ -6,7 +6,7 @@ def $sdk = properties.getProperty("sdk") as Integer
 
 android {
     namespace = "com.eran.benishhai"
-    compileSdk $sdk
+    compileSdkVersion $sdk
 
     defaultConfig {
         applicationId "com.eran.benishhai"
