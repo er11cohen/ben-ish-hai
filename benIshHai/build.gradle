@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.eran.benishhai"
-        minSdkVersion 14
+        minSdkVersion $minSdkVersion
         targetSdk $sdk
         versionCode = 10604
         versionName = "1.6.4"
