@@ -19,7 +19,7 @@ package com.github.johnpersano.supertoasts.util;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
+
 import com.github.johnpersano.supertoasts.R;
 import com.github.johnpersano.supertoasts.SuperToast;
 
@@ -212,89 +212,43 @@ public class Style {
 
     public static int getBackground(int style) {
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        switch (style) {
 
-            switch (style) {
+            case BLACK:
 
-                case BLACK:
+                return (R.drawable.background_kitkat_black);
 
-                    return (R.drawable.background_kitkat_black);
+            case WHITE:
 
-                case WHITE:
+                return (R.drawable.background_kitkat_white);
 
-                    return (R.drawable.background_kitkat_white);
+            case GRAY:
 
-                case GRAY:
+                return (R.drawable.background_kitkat_gray);
 
-                    return (R.drawable.background_kitkat_gray);
+            case PURPLE:
 
-                case PURPLE:
+                return (R.drawable.background_kitkat_purple);
 
-                    return (R.drawable.background_kitkat_purple);
+            case RED:
 
-                case RED:
+                return (R.drawable.background_kitkat_red);
 
-                    return (R.drawable.background_kitkat_red);
+            case ORANGE:
 
-                case ORANGE:
+                return (R.drawable.background_kitkat_orange);
 
-                    return (R.drawable.background_kitkat_orange);
+            case BLUE:
 
-                case BLUE:
+                return (R.drawable.background_kitkat_blue);
 
-                    return (R.drawable.background_kitkat_blue);
+            case GREEN:
 
-                case GREEN:
+                return (R.drawable.background_kitkat_green);
 
-                    return (R.drawable.background_kitkat_green);
+            default:
 
-                default:
-
-                    return (R.drawable.background_kitkat_gray);
-
-            }
-
-        } else {
-
-            switch (style) {
-
-                case BLACK:
-
-                    return (R.drawable.background_standard_black);
-
-                case WHITE:
-
-                    return (R.drawable.background_standard_white);
-
-                case GRAY:
-
-                    return (R.drawable.background_standard_gray);
-
-                case PURPLE:
-
-                    return (R.drawable.background_standard_purple);
-
-                case RED:
-
-                    return (R.drawable.background_standard_red);
-
-                case ORANGE:
-
-                    return (R.drawable.background_standard_orange);
-
-                case BLUE:
-
-                    return (R.drawable.background_standard_blue);
-
-                case GREEN:
-
-                    return (R.drawable.background_standard_green);
-
-                default:
-
-                    return (R.drawable.background_standard_gray);
-
-            }
+                return (R.drawable.background_kitkat_gray);
 
         }
 

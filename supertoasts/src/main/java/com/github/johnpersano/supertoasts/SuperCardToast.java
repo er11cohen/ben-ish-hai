@@ -1,17 +1,17 @@
 /**
- *  Copyright 2014 John Persano
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *	you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *	Unless required by applicable law or agreed to in writing, software
- *	distributed under the License is distributed on an "AS IS" BASIS,
- *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *	See the License for the specific language governing permissions and
- *	limitations under the License.
+ * Copyright 2014 John Persano
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  */
 
@@ -25,7 +25,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -33,15 +36,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.animation.*;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.github.johnpersano.supertoasts.SuperToast.Animations;
 import com.github.johnpersano.supertoasts.SuperToast.IconPosition;
 import com.github.johnpersano.supertoasts.SuperToast.Type;
-import com.github.johnpersano.supertoasts.util.*;
+import com.github.johnpersano.supertoasts.util.OnClickWrapper;
+import com.github.johnpersano.supertoasts.util.OnDismissWrapper;
+import com.github.johnpersano.supertoasts.util.Style;
+import com.github.johnpersano.supertoasts.util.SwipeDismissListener;
+import com.github.johnpersano.supertoasts.util.Wrappers;
 
 import java.util.LinkedList;
 
@@ -611,49 +625,89 @@ public class SuperCardToast {
     }
 
     /**
-     * Make sure KitKat style backgrounds are not used with {@value #TAG}.
-     *
-     * @return int
+     * Method used to recreate {@value #TAG} after orientation change
      */
-    private int checkForKitKatBackgrounds(int background) {
+    private SuperCardToast(Activity activity, ReferenceHolder referenceHolder, Wrappers wrappers, int position) {
 
-        if(background == R.drawable.background_kitkat_black) {
+        SuperCardToast superCardToast;
 
-            return (R.drawable.background_standard_black);
+        if (referenceHolder.mType == Type.BUTTON) {
 
-        } else if(background == R.drawable.background_kitkat_blue) {
+            superCardToast = new SuperCardToast(activity, Type.BUTTON);
+            superCardToast.setButtonText(referenceHolder.mButtonText);
+            superCardToast.setButtonTextSizeFloat(referenceHolder.mButtonTextSize);
+            superCardToast.setButtonTextColor(referenceHolder.mButtonTextColor);
+            superCardToast.setButtonIcon(referenceHolder.mButtonIcon);
+            superCardToast.setDividerColor(referenceHolder.mButtonDivider);
+            superCardToast.setButtonTypefaceStyle(referenceHolder.mButtonTypefaceStyle);
 
-            return (R.drawable.background_standard_blue);
+            if (wrappers != null) {
 
-        } else if(background == R.drawable.background_kitkat_gray) {
+                for (OnClickWrapper onClickWrapper : wrappers.getOnClickWrappers()) {
 
-            return (R.drawable.background_standard_gray);
+                    if (onClickWrapper.getTag().equalsIgnoreCase(referenceHolder.mClickListenerTag)) {
 
-        } else if(background == R.drawable.background_kitkat_green) {
+                        superCardToast.setOnClickWrapper(onClickWrapper, referenceHolder.mToken);
 
-            return (R.drawable.background_standard_green);
+                    }
 
-        } else if(background == R.drawable.background_kitkat_orange) {
+                }
+            }
 
-            return (R.drawable.background_standard_orange);
+        } else if (referenceHolder.mType == Type.PROGRESS) {
 
-        } else if(background == R.drawable.background_kitkat_purple) {
+            /* PROGRESS style SuperCardToasts should be managed by the developer */
 
-            return (R.drawable.background_standard_purple);
+            return;
 
-        } else if(background == R.drawable.background_kitkat_red) {
+        } else if (referenceHolder.mType == Type.PROGRESS_HORIZONTAL) {
 
-            return (R.drawable.background_standard_red);
+            /* PROGRESS_HORIZONTAL style SuperCardToasts should be managed by the developer */
 
-        } else if(background == R.drawable.background_kitkat_white) {
-
-            return (R.drawable.background_standard_white);
+            return;
 
         } else {
 
-           return background;
+            superCardToast = new SuperCardToast(activity);
 
         }
+
+        if (wrappers != null) {
+
+            for (OnDismissWrapper onDismissListenerWrapper : wrappers.getOnDismissWrappers()) {
+
+                if (onDismissListenerWrapper.getTag().equalsIgnoreCase(referenceHolder.mDismissListenerTag)) {
+
+                    superCardToast.setOnDismissWrapper(onDismissListenerWrapper);
+
+                }
+
+            }
+        }
+
+        superCardToast.setAnimations(referenceHolder.mAnimations);
+        superCardToast.setText(referenceHolder.mText);
+        superCardToast.setTypefaceStyle(referenceHolder.mTypefaceStyle);
+        superCardToast.setDuration(referenceHolder.mDuration);
+        superCardToast.setTextColor(referenceHolder.mTextColor);
+        superCardToast.setTextSizeFloat(referenceHolder.mTextSize);
+        superCardToast.setIndeterminate(referenceHolder.mIsIndeterminate);
+        superCardToast.setIcon(referenceHolder.mIcon, referenceHolder.mIconPosition);
+        superCardToast.setBackground(referenceHolder.mBackground);
+
+        /* Must use if else statements here to prevent erratic behavior */
+        if (referenceHolder.mIsTouchDismissible) {
+
+            superCardToast.setTouchToDismiss(true);
+
+        } else if (referenceHolder.mIsSwipeDismissible) {
+
+            superCardToast.setSwipeToDismiss(true);
+
+        }
+
+        superCardToast.setShowImmediate(true);
+        superCardToast.show();
 
     }
 
@@ -744,41 +798,47 @@ public class SuperCardToast {
     }
 
     /**
-     * If true will dismiss the {@value #TAG} if the user swipes it.
+     * Make sure KitKat style backgrounds are not used with {@value #TAG}.
      *
-     * @param swipeDismiss boolean
+     * @return int
      */
-    public void setSwipeToDismiss(boolean swipeDismiss) {
+    private int checkForKitKatBackgrounds(int background) {
 
-        this.mIsSwipeDismissible = swipeDismiss;
+        if (background == R.drawable.background_kitkat_black) {
 
-        if (swipeDismiss) {
+            return (R.drawable.background_standard_black);
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB_MR1) {
+        } else if (background == R.drawable.background_kitkat_blue) {
 
-                final SwipeDismissListener swipeDismissListener = new SwipeDismissListener(
-                        mToastView, new SwipeDismissListener.OnDismissCallback() {
+            return (R.drawable.background_standard_blue);
 
-                    @Override
-                    public void onDismiss(View view) {
+        } else if (background == R.drawable.background_kitkat_gray) {
 
-                        dismissImmediately();
+            return (R.drawable.background_standard_gray);
 
-                    }
+        } else if (background == R.drawable.background_kitkat_green) {
 
-                });
+            return (R.drawable.background_standard_green);
 
-                mToastView.setOnTouchListener(swipeDismissListener);
+        } else if (background == R.drawable.background_kitkat_orange) {
 
-            } else {
+            return (R.drawable.background_standard_orange);
 
-                Log.w(TAG, WARNING_PREHONEYCOMB);
+        } else if (background == R.drawable.background_kitkat_purple) {
 
-            }
+            return (R.drawable.background_standard_purple);
+
+        } else if (background == R.drawable.background_kitkat_red) {
+
+            return (R.drawable.background_standard_red);
+
+        } else if (background == R.drawable.background_kitkat_white) {
+
+            return (R.drawable.background_standard_white);
 
         } else {
 
-            mToastView.setOnTouchListener(null);
+            return background;
 
         }
 
@@ -936,53 +996,23 @@ public class SuperCardToast {
 
     }
 
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
-    private void dismissWithAnimation() {
+    /**
+     * If true will dismiss the {@value #TAG} if the user swipes it.
+     *
+     * @param swipeDismiss boolean
+     */
+    public void setSwipeToDismiss(boolean swipeDismiss) {
 
-        Animation animation = this.getDismissAnimation();
+        this.mIsSwipeDismissible = swipeDismiss;
 
-        animation.setAnimationListener(new Animation.AnimationListener() {
+        if (swipeDismiss) {
+            final SwipeDismissListener swipeDismissListener = new SwipeDismissListener(
+                    mToastView, view -> dismissImmediately());
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
+            mToastView.setOnTouchListener(swipeDismissListener);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-
-                    /* Must use Handler to modify ViewGroup in onAnimationEnd() **/
-                    Handler handler = new Handler();
-                    handler.post(mHideWithAnimationRunnable);
-
-                } else {
-
-                    /* Must use Handler to modify ViewGroup in onAnimationEnd() **/
-                    Handler handler = new Handler();
-                    handler.post(mHideImmediateRunnable);
-
-                }
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-                /* Do nothing */
-
-            }
-
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-                /* Do nothing */
-
-            }
-
-        });
-
-        if (mToastView != null) {
-
-            mToastView.startAnimation(animation);
-
+        } else {
+            mToastView.setOnTouchListener(null);
         }
 
     }
@@ -1029,12 +1059,42 @@ public class SuperCardToast {
 
     }
 
-    /**
-     * Used in orientation change recreation.
-     */
-    private Parcelable getToken(){
+    @SuppressLint("NewApi")
+    @SuppressWarnings("deprecation")
+    private void dismissWithAnimation() {
 
-        return mToken;
+        Animation animation = this.getDismissAnimation();
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                /* Must use Handler to modify ViewGroup in onAnimationEnd() **/
+                Handler handler = new Handler();
+                handler.post(mHideWithAnimationRunnable);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+                /* Do nothing */
+
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+                /* Do nothing */
+
+            }
+
+        });
+
+        if (mToastView != null) {
+
+            mToastView.startAnimation(animation);
+
+        }
 
     }
 
@@ -1171,24 +1231,11 @@ public class SuperCardToast {
     }
 
     /**
-     * Returns the button text of a BUTTON
-     * {@link com.github.johnpersano.supertoasts.SuperToast.Type} {@value #TAG}.
-     *
-     * @return {@link CharSequence}
+     * Used in orientation change recreation.
      */
-    public CharSequence getButtonText() {
+    private Parcelable getToken() {
 
-        if(mButton != null) {
-
-            return mButton.getText();
-
-        } else {
-
-            Log.e(TAG, "getButtonText()" + ERROR_NOTBUTTONTYPE);
-
-            return "";
-
-        }
+        return mToken;
 
     }
 
@@ -1251,22 +1298,22 @@ public class SuperCardToast {
     }
 
     /**
-     * Returns the button text color of a BUTTON
+     * Returns the button text of a BUTTON
      * {@link com.github.johnpersano.supertoasts.SuperToast.Type} {@value #TAG}.
      *
-     * @return int
+     * @return {@link CharSequence}
      */
-    public int getButtonTextColor() {
+    public CharSequence getButtonText() {
 
-        if(mButton != null) {
+        if (mButton != null) {
 
-            return mButton.getCurrentTextColor();
+            return mButton.getText();
 
         } else {
 
-            Log.e(TAG, "getButtonTextColor()" + ERROR_NOTBUTTONTYPE);
+            Log.e(TAG, "getButtonText()" + ERROR_NOTBUTTONTYPE);
 
-            return 0;
+            return "";
 
         }
 
@@ -1304,22 +1351,22 @@ public class SuperCardToast {
     }
 
     /**
-     * Returns the button text size of a BUTTON
+     * Returns the button text color of a BUTTON
      * {@link com.github.johnpersano.supertoasts.SuperToast.Type} {@value #TAG}.
      *
-     * @return float
+     * @return int
      */
-    public float getButtonTextSize() {
+    public int getButtonTextColor() {
 
-        if(mButton != null){
+        if (mButton != null) {
 
-            return mButton.getTextSize();
+            return mButton.getCurrentTextColor();
 
         } else {
 
-            Log.e(TAG, "getButtonTextSize()" + ERROR_NOTBUTTONTYPE);
+            Log.e(TAG, "getButtonTextColor()" + ERROR_NOTBUTTONTYPE);
 
-            return 0.0f;
+            return 0;
 
         }
 
@@ -1348,22 +1395,22 @@ public class SuperCardToast {
     }
 
     /**
-     * Returns the progress of the progressbar in a PROGRESS_HORIZONTAL
+     * Returns the button text size of a BUTTON
      * {@link com.github.johnpersano.supertoasts.SuperToast.Type} {@value #TAG}.
      *
-     * @return int
+     * @return float
      */
-    public int getProgress() {
+    public float getButtonTextSize() {
 
-        if(mProgressBar != null) {
+        if (mButton != null) {
 
-            return mProgressBar.getProgress();
+            return mButton.getTextSize();
 
         } else {
 
-            Log.e(TAG, "ProgressBar" + ERROR_NOTPROGRESSHORIZONTALTYPE);
+            Log.e(TAG, "getButtonTextSize()" + ERROR_NOTBUTTONTYPE);
 
-            return 0;
+            return 0.0f;
 
         }
 
@@ -1392,22 +1439,22 @@ public class SuperCardToast {
     }
 
     /**
-     * Returns the maximum value of the progressbar in a PROGRESS_HORIZONTAL
+     * Returns the progress of the progressbar in a PROGRESS_HORIZONTAL
      * {@link com.github.johnpersano.supertoasts.SuperToast.Type} {@value #TAG}.
      *
      * @return int
      */
-    public int getMaxProgress() {
+    public int getProgress() {
 
-        if(mProgressBar != null){
+        if (mProgressBar != null) {
 
-            return mProgressBar.getMax();
+            return mProgressBar.getProgress();
 
         } else {
 
-            Log.e(TAG, "getMaxProgress()" + ERROR_NOTPROGRESSHORIZONTALTYPE);
+            Log.e(TAG, "ProgressBar" + ERROR_NOTPROGRESSHORIZONTALTYPE);
 
-            return mProgressBar.getMax();
+            return 0;
 
         }
 
@@ -1505,19 +1552,22 @@ public class SuperCardToast {
     }
 
     /**
-     * Private method used to set a default style to the {@value #TAG}
+     * Returns the maximum value of the progressbar in a PROGRESS_HORIZONTAL
+     * {@link com.github.johnpersano.supertoasts.SuperToast.Type} {@value #TAG}.
+     *
+     * @return int
      */
-    private void setStyle(Style style) {
+    public int getMaxProgress() {
 
-        this.setAnimations(style.animations);
-        this.setTypefaceStyle(style.typefaceStyle);
-        this.setTextColor(style.textColor);
-        this.setBackground(style.background);
+        if (mProgressBar != null) {
 
-        if(this.mType == Type.BUTTON) {
+            return mProgressBar.getMax();
 
-            this.setDividerColor(style.dividerColor);
-            this.setButtonTextColor(style.buttonTextColor);
+        } else {
+
+            Log.e(TAG, "getMaxProgress()" + ERROR_NOTPROGRESSHORIZONTALTYPE);
+
+            return mProgressBar.getMax();
 
         }
 
@@ -1780,7 +1830,6 @@ public class SuperCardToast {
     }
 
 
-
     /**
      * Dismisses and removes all showing/pending SuperCardToasts.
      */
@@ -1880,89 +1929,21 @@ public class SuperCardToast {
     }
 
     /**
-     * Method used to recreate {@value #TAG} after orientation change
+     * Private method used to set a default style to the {@value #TAG}
      */
-    private SuperCardToast(Activity activity, ReferenceHolder referenceHolder, Wrappers wrappers, int position) {
+    private void setStyle(Style style) {
 
-        SuperCardToast superCardToast;
+        this.setAnimations(style.animations);
+        this.setTypefaceStyle(style.typefaceStyle);
+        this.setTextColor(style.textColor);
+        this.setBackground(style.background);
 
-        if(referenceHolder.mType == Type.BUTTON) {
+        if (this.mType == Type.BUTTON) {
 
-            superCardToast = new SuperCardToast(activity, Type.BUTTON);
-            superCardToast.setButtonText(referenceHolder.mButtonText);
-            superCardToast.setButtonTextSizeFloat(referenceHolder.mButtonTextSize);
-            superCardToast.setButtonTextColor(referenceHolder.mButtonTextColor);
-            superCardToast.setButtonIcon(referenceHolder.mButtonIcon);
-            superCardToast.setDividerColor(referenceHolder.mButtonDivider);
-            superCardToast.setButtonTypefaceStyle(referenceHolder.mButtonTypefaceStyle);
-
-            if(wrappers != null) {
-
-                for (OnClickWrapper onClickWrapper : wrappers.getOnClickWrappers()) {
-
-                    if (onClickWrapper.getTag().equalsIgnoreCase(referenceHolder.mClickListenerTag)) {
-
-                        superCardToast.setOnClickWrapper(onClickWrapper, referenceHolder.mToken);
-
-                    }
-
-                }
-            }
-
-        } else if (referenceHolder.mType == Type.PROGRESS) {
-
-            /* PROGRESS style SuperCardToasts should be managed by the developer */
-
-            return;
-
-        } else if (referenceHolder.mType == Type.PROGRESS_HORIZONTAL) {
-
-            /* PROGRESS_HORIZONTAL style SuperCardToasts should be managed by the developer */
-
-            return;
-
-        } else {
-
-            superCardToast = new SuperCardToast(activity);
+            this.setDividerColor(style.dividerColor);
+            this.setButtonTextColor(style.buttonTextColor);
 
         }
-
-        if (wrappers != null) {
-
-            for (OnDismissWrapper onDismissListenerWrapper : wrappers.getOnDismissWrappers()) {
-
-                if (onDismissListenerWrapper.getTag().equalsIgnoreCase(referenceHolder.mDismissListenerTag)) {
-
-                    superCardToast.setOnDismissWrapper(onDismissListenerWrapper);
-
-                }
-
-            }
-        }
-
-        superCardToast.setAnimations(referenceHolder.mAnimations);
-        superCardToast.setText(referenceHolder.mText);
-        superCardToast.setTypefaceStyle(referenceHolder.mTypefaceStyle);
-        superCardToast.setDuration(referenceHolder.mDuration);
-        superCardToast.setTextColor(referenceHolder.mTextColor);
-        superCardToast.setTextSizeFloat(referenceHolder.mTextSize);
-        superCardToast.setIndeterminate(referenceHolder.mIsIndeterminate);
-        superCardToast.setIcon(referenceHolder.mIcon, referenceHolder.mIconPosition);
-        superCardToast.setBackground(referenceHolder.mBackground);
-
-        /* Must use if else statements here to prevent erratic behavior */
-        if (referenceHolder.mIsTouchDismissible) {
-
-            superCardToast.setTouchToDismiss(true);
-
-        } else if (referenceHolder.mIsSwipeDismissible) {
-
-            superCardToast.setSwipeToDismiss(true);
-
-        }
-
-        superCardToast.setShowImmediate(true);
-        superCardToast.show();
 
     }
 
