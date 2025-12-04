@@ -69,12 +69,7 @@ public class MainActivity extends Activity {
     @SuppressLint("NewApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            getMenuInflater().inflate(R.menu.main, menu);
-        } else {
-            MenuItem itemSearch = menu.findItem(R.id.menu_search_all_book);
-            itemSearch.setVisible(false);
-        }
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
