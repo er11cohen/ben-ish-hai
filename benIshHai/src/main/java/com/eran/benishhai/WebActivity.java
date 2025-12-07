@@ -10,8 +10,10 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -23,10 +25,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
+import android.window.OnBackInvokedDispatcher;
 
 import com.eran.utils.Utils;
 import com.google.gson.Gson;
@@ -64,6 +66,12 @@ public class WebActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    this::backButton
+            );
+        }
 
         defaultSharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
@@ -90,7 +98,7 @@ public class WebActivity extends Activity {
         phoneStatus = defaultSharedPreferences.getString("phone_status", "-1");
 
         BIHPreferences = getSharedPreferences("BIHPreferences", MODE_PRIVATE);
-        wv = (WebView) findViewById(R.id.webViewBIH);
+        wv = findViewById(R.id.webViewBIH);
         wvSetting = wv.getSettings();
         // registerForContextMenu(wv);
 
@@ -136,7 +144,7 @@ public class WebActivity extends Activity {
                 finish();// not need to arrive to here
             }
         } else {
-            Location location = (Location) intent.getParcelableExtra("location");
+            Location location = intent.getParcelableExtra("location");
             yearEn = location.getYearEn();
             yearHe = location.getYearHe();
             humashEn = location.getHumashEn();
@@ -161,7 +169,6 @@ public class WebActivity extends Activity {
         Utils.setRingerMode(this, Integer.parseInt(phoneStatus), startRingerMode);
     }
 
-    @SuppressLint("NewApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -170,54 +177,48 @@ public class WebActivity extends Activity {
 
         NextMI = menu.findItem(R.id.next);
         PreviousMI = menu.findItem(R.id.previous);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        searchItem.setVisible(true);
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("חיפוש בפרשה הנוכחית");
 
-            // Toast.makeText(getApplicationContext(),"onQueryTextChange "
-            // ,Toast.LENGTH_LONG).show();
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
-            MenuItem searchItem = menu.findItem(R.id.menu_item_search);
-            searchItem.setVisible(true);
-            searchView = (SearchView) searchItem.getActionView();
-            searchView.setQueryHint("חיפוש בפרשה הנוכחית");
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            @Override
+            public boolean onQueryTextChange(String query) {
+                return true;
+            }
 
-            searchView.setSearchableInfo(searchManager
-                    .getSearchableInfo(getComponentName()));
-            searchView.setOnQueryTextListener(new OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                scrollY = wv.getScrollY();// save the location before the
+                // search
+                find(query);
+                // TODO Auto-generated method stub
+                return true;
+            }
 
-                @Override
-                public boolean onQueryTextChange(String query) {
-                    return true;
-                }
+        });
 
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    scrollY = wv.getScrollY();// save the location before the
-                    // search
-                    find(query);
-                    // TODO Auto-generated method stub
-                    return true;
-                }
+        searchView.setOnCloseListener(new OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                closeSearch(true);
+                return false;
+            }
 
-            });
+        });
 
-            searchView.setOnCloseListener(new OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    closeSearch(true);
-                    return false;
-                }
-
-            });
-
-            searchView.setOnSearchClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    // TODO Auto-generated method stub
-                }
-            });
-        }
+        searchView.setOnSearchClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
 
         return true;
     }
@@ -264,28 +265,56 @@ public class WebActivity extends Activity {
                 super.onPageFinished(view, url);
                 Utils.setOpacity(wv, 0.1);
                 Utils.showWebView(wv,
-                        (ProgressBar) findViewById(R.id.progressBarBIH), true);
-                if (scrollY != 0) {
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            wv.scrollTo(0, scrollY);
-                            setPageFinishSettings();
+                        findViewById(R.id.progressBarBIH), true);
+
+                if (scrollY != 0 || textToSearch != null) {
+                    wv.postVisualStateCallback(12345, new WebView.VisualStateCallback() {
+                        @Override
+                        public void onComplete(long requestId) {
+                            waitForCompleteLayout(view, WebActivity.this::webViewIsReady);
                         }
-                    }, 1100);
-                } else if (textToSearch != null) {
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            searchView.setIconified(false);//open the search view programmatically
-                            searchView.setQuery(textToSearch, true);
-                            searchView.clearFocus();//close the keyboard
-                            setPageFinishSettings();
-                        }
-                    }, 1100);
+                    });
                 } else {
                     setPageFinishSettings();
                 }
             }
         });
+    }
+
+    private void webViewIsReady() {
+        if (textToSearch != null) {
+            searchView.setIconified(false);//open the search view programmatically
+            searchView.setQuery(textToSearch, true);
+            searchView.clearFocus();
+        } else { // scrollY != 0
+            wv.scrollTo(0, scrollY);
+        }
+
+        setPageFinishSettings();
+    }
+
+    private void waitForCompleteLayout(WebView wv, Runnable callback) {
+        // Check if dimensions are stable
+        final int[] previousHeight = {wv.getContentHeight()};
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable checkStability = new Runnable() {
+
+            @Override
+            public void run() {
+                int currentHeight = wv.getContentHeight();
+
+                if (currentHeight == previousHeight[0] && currentHeight > 0) {
+                    // Height is stable, likely ready
+                    new Handler().postDelayed(callback, 50);
+                } else {
+                    previousHeight[0] = currentHeight;
+                    handler.postDelayed(this, 50);
+                }
+            }
+        };
+
+        handler.postDelayed(checkStability, 50);
     }
 
     private void setPageFinishSettings() {
@@ -384,35 +413,32 @@ public class WebActivity extends Activity {
 
     @SuppressLint("NewApi")
     public void onBackPressed() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
+            backButton();
+        }
+    }
 
+    private void backButton() {
         wv.clearFocus();// for close pop-up of copy, select etc.
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            if (!searchView.isIconified()) {
-                closeSearch(false);
-            } else {
-                super.onBackPressed();
-            }
+        if (!searchView.isIconified()) {
+            closeSearch(false);
         } else {
-            super.onBackPressed();
+            finish();
         }
-
     }
 
     // for voice search
-    @SuppressLint("NewApi")
     @Override
     protected void onNewIntent(Intent intent) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-                String query = intent.getStringExtra(SearchManager.QUERY);
-                searchView.setQuery(query, true);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchView.setQuery(query, true);
 
-                // close the keyboard
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-                }
+            // close the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
             }
         }
     }

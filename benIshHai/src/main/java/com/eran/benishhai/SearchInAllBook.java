@@ -6,14 +6,13 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -22,6 +21,7 @@ import android.widget.SearchView.OnCloseListener;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import com.eran.utils.Utils;
 
@@ -41,25 +41,31 @@ public class SearchInAllBook extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    this::backButton
+            );
+        }
+
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_search_in_all_book);
-        lv = (ListView) findViewById(R.id.ListViewHalach);
-        progressBar = (ProgressBar) findViewById(R.id.progressBarSearchInAllBook);
-        TVNoResult = (TextView) findViewById(R.id.TVNoResult);
+        lv = findViewById(R.id.ListViewHalach);
+        progressBar = findViewById(R.id.progressBarSearchInAllBook);
+        TVNoResult = findViewById(R.id.TVNoResult);
 
-        alHalach = new ArrayList<Halach>();
+        alHalach = new ArrayList<>();
 
-        lv.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View currView, int position, long id) {
-                Halach selected = (Halach) lv.getItemAtPosition(position);
+        lv.setOnItemClickListener((parent, currView, position, id) -> {
+            Halach selected = (Halach) lv.getItemAtPosition(position);
 
-                Intent intent = new Intent(getApplicationContext(), WebActivity.class);
-                Location location = new Location(selected.getYearEn(), selected.getYearHe(), selected.getHumashHe(),
-                        selected.getHumashEn(), selected.getParshHe(), selected.getParshEn(), queryText);
-                intent.putExtra("location", location);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(getApplicationContext(), WebActivity.class);
+            Location location = new Location(selected.getYearEn(), selected.getYearHe(), selected.getHumashHe(),
+                    selected.getHumashEn(), selected.getParshHe(), selected.getParshEn(), queryText);
+            intent.putExtra("location", location);
+            startActivity(intent);
         });
 
         String text = Utils.ReadTxtFile("files/benIshHaiCSV.csv", getApplicationContext());
@@ -140,11 +146,16 @@ public class SearchInAllBook extends Activity {
 
     @SuppressLint("NewApi")
     public void onBackPressed() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) {
+            backButton();
+        }
+    }
 
+    private void backButton() {
         if (!searchView.isIconified()) {
             closeSearch();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 
