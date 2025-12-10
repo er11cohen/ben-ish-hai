@@ -4,6 +4,7 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file("gradle.properties").newDataInputStream())
 def $sdk = properties.getProperty("sdk") as Integer
 def $minSdkVersion = properties.getProperty("minSdkVersion") as Integer
+def $javaVersion = properties.getProperty("javaVersion") as Integer
 
 android {
     compileSdkVersion $sdk
@@ -13,8 +14,8 @@ android {
         minSdkVersion $minSdkVersion
         targetSdk $sdk
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_20
-            targetCompatibility JavaVersion.VERSION_20
+            sourceCompatibility $javaVersion
+            targetCompatibility $javaVersion
         }
     }
 
