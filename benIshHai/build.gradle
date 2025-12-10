@@ -15,8 +15,8 @@ android {
         versionCode = 10604
         versionName = "1.6.4"
         compileOptions {
-            sourceCompatibility $javaVersion
-            targetCompatibility $javaVersion
+            sourceCompatibility JavaVersion.toVersion($javaVersion)
+            targetCompatibility JavaVersion.toVersion($javaVersion)
         }
     }
 
