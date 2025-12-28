@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 Properties properties = new Properties()
 properties.load(project.rootProject.file("gradle.properties").newDataInputStream())
 def $sdk = properties.getProperty("sdk") as Integer
+def $minSdkVersion = properties.getProperty("minSdkVersion") as Integer
+def $javaVersion = properties.getProperty("javaVersion")
 
 android {
     namespace = "com.eran.benishhai"
@@ -29,9 +31,6 @@ android {
 }
 
 dependencies {
-    implementation project(':supertoasts')
     implementation project(':utils')
-    implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.google.code.gson:gson:2.2.4'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
 }
