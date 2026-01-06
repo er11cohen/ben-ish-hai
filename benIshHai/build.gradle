@@ -14,8 +14,8 @@ android {
         applicationId "com.eran.benishhai"
         minSdkVersion $minSdkVersion
         targetSdk $sdk
-        versionCode = 10605
-        versionName = "1.6.5"
+        versionCode = 10606
+        versionName = "1.6.6"
         compileOptions {
             sourceCompatibility JavaVersion.toVersion($javaVersion)
             targetCompatibility JavaVersion.toVersion($javaVersion)
